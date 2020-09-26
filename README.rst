@@ -1,4 +1,4 @@
-Static Packaging Checker
+Packaging Static Checker
 ========================
 
 This is a project for experimenting with ways to (optionally) enforce
