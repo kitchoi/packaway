@@ -1,6 +1,4 @@
-"""
-This is the top-level package of a distribution.
-Imagine there was a setup.py here.
+This is a project for experimenting with packaging patterns.
 
 Story
 =====
@@ -29,4 +27,3 @@ How:
         The application will accept self reported test results. When someone
         is tested positive, other app users who have been in the proximity
         in the last 14 days will be notified.
-"""
