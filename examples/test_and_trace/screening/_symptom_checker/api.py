@@ -1,4 +1,4 @@
-from ._algorithm.api import has_enough, is_recent
+from ._algorithm import api as _algorithm_api
 
 
 def get_form():
@@ -14,4 +14,7 @@ def get_form():
 
 
 def is_eligible(data):
-    return has_enough(data["symptoms"]) and is_recent(data["days_since_onset"])
+    return (
+        _algorithm_api.has_enough(data["symptoms"]) and
+        _algorithm_api.is_recent(data["days_since_onset"])
+    )
