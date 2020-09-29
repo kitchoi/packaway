@@ -2,9 +2,11 @@
 is eligible for a test based on their symptoms.
 """
 
+from .._symptom_names import NAMES
+
 
 def has_enough(symptoms):
-    return len(symptoms) > 0
+    return sum(symptom in NAMES for symptom in symptoms) > 0
 
 
 def is_recent(days_since_onset):

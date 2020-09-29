@@ -1,11 +1,15 @@
 from ._algorithm import api as _algorithm_api
+from ._symptom_names import NAMES
+
+# Bad import! Using private things!
+from ._algorithm import _duration  # noqa: F401
 
 
 def get_form():
     return {
         "symptoms": {
             "type": "zero or more",
-            "options": ["headache", "cough", "loss of smell"],
+            "options": NAMES,
         },
         "days_since_onset": {
             "type": "nonnegative integer",
