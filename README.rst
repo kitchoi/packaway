@@ -11,7 +11,7 @@ To install
 ----------
 
 To use the optional Flake8 plugin, one should have ``flake8`` installed in
-their environment::
+their environment, and then install ``packaway`` from the source here::
 
     $ pip install .
 
