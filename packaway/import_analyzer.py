@@ -1,6 +1,4 @@
 import ast
-import os
-import sys
 
 
 class ImportRuleViolation:
