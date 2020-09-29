@@ -7,8 +7,22 @@ encapsulation and access control with Python, using static code analysis.
 The ``examples`` folder contains Python distributions for illustrating
 different packaging scenarios.
 
+To install
+----------
+
+To use the optional Flake8 plugin, one should have ``flake8`` installed in
+their environment.
+
+```
+    $ pip install .
+```
+
+
 Examples
 --------
+
+Trying to run the flake8 plugin with the ``examples/test_and_trace`` folder
+should result in two errors.
 
 For a module ``_duration`` under this absolute name::
 
