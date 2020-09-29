@@ -23,14 +23,18 @@ class ImportChecker:
     name = __name__
     version = "0.1.0"
     _code = "ARC1"
+    _top_level_dir = None
+    _deduce_path = True
 
     def __init__(self, tree, file_tokens, filename):
         self._tree = tree
         self._module_name = _find_module_name(file_tokens)
 
-        # TODO: Make this magic configurable!
-        if self._module_name is None:
-            parts = list(pathlib.PurePath(filename).parts)
+        if self._deduce_path and self._module_name is None:
+            path = pathlib.PurePath(filename)
+            if self._top_level_dir is not None:
+                path = path.relative_to(self._top_level_dir)
+            parts = list(path.parts)
             parts[-1], _ = os.path.splitext(parts[-1])
             self._module_name = ".".join(parts)
 
@@ -42,3 +46,23 @@ class ImportChecker:
                 self._code + " " + error.message,
                 type(self),
             )
+
+    @classmethod
+    def add_options(cls, option_manager):
+        option_manager.add_option(
+            "--no-deduce-path",
+            dest="no_deduce_path",
+            action="store_true",
+            help="Switch off parsing file paths as module names.",
+        )
+        option_manager.add_option(
+            "--top-level-dir",
+            dest="top_level_dir",
+            default=None,
+            help="Top level directory for parsing file paths as module names.",
+        )
+
+    @classmethod
+    def parse_options(cls, options):
+        cls._top_level_dir = options.top_level_dir
+        cls._deduce_path = not options.no_deduce_path
