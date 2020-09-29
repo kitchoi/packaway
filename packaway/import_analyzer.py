@@ -105,13 +105,3 @@ def collect_errors(tree, module_name=None):
     analyzer = _ImportAnalyzer(module_name=module_name)
     analyzer.visit(tree)
     return analyzer._errors
-
-
-if __name__ == "__main__":
-    filepath = sys.argv[1]
-    filepath = os.path.normpath(filepath)
-
-    with open(filepath, "r", encoding="utf-8") as f:
-        tree = ast.parse(f.read())
-
-    print(collect_errors(tree))
