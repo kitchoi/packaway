@@ -13,7 +13,7 @@ setuptools.setup(
     name="packaway",
     license="MIT",
     version=VERSION,
-    description="Static Checker to Enforce (Some) Encapsultion in Python.",
+    description="Static Checker to Enforce (Some) Encapsulation in Python.",
     packages=setuptools.find_packages(),
     long_description=long_description,
     long_description_content_type="text/x-rst",
