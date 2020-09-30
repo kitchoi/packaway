@@ -1,8 +1,8 @@
-Packaging Static Checker
-========================
+Packaway: Packaging Static Checker
+==================================
 
 Packaway is a tool for enforcing encapsulation and access control in Python
-using static code checkers.
+by performing static code analysis.
 
 Currently the distribution supplies a flake8 plugin.
 
