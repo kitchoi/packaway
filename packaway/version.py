@@ -1,10 +1,10 @@
 
 _MAJOR = 0
-_MINOR = 2
-_MICRO = 0
+_MINOR = 1
+_MICRO = 2
 
 #: One of 'alpha', 'beta', 'candidate', 'final'
-_RELEASE_LEVEL = "alpha"
+_RELEASE_LEVEL = "final"
 
 _SERIAL = 0
 
