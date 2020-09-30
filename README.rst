@@ -13,9 +13,15 @@ To install::
 
     $ pip install packaway
 
+To verify the packaway flake8 plugin is installed::
+
+    $ flake8 --version
+    3.8.3 (mccabe: 0.6.1, packaway-import: 0.1.2, pycodestyle: 2.6.0, pyflakes: 2.2.0) CPython 3.8.1 on Linux
+
 To lint your file::
 
     $ flake8 example.py
+    example.py:1:1: DEP401 Importing private name 'package._name'.
 
 Packaging rules
 ---------------
