@@ -1,21 +1,6 @@
 import os
 import pathlib
-import re
-import tokenize
 from packaway.import_analyzer import collect_errors
-
-
-_KEYWORD = "packaway.name: "
-_PATTERN = r"^#\s*packaway\.name\s*:\s*([\w\.]*)\s*"
-
-
-def _find_module_name(tokens):
-    for token in tokens:
-        if token.type == tokenize.COMMENT:
-            matched = re.match(_PATTERN, token.string)
-            if matched:
-                return matched.groups()[0]
-    return None
 
 
 class ImportChecker:
@@ -26,17 +11,18 @@ class ImportChecker:
     _top_level_dir = None
     _deduce_path = True
 
-    def __init__(self, tree, file_tokens, filename):
+    def __init__(self, tree, filename):
         self._tree = tree
-        self._module_name = _find_module_name(file_tokens)
 
-        if self._deduce_path and self._module_name is None:
+        if self._deduce_path:
             path = pathlib.PurePath(filename)
             if self._top_level_dir is not None:
                 path = path.relative_to(self._top_level_dir)
             parts = list(path.parts)
             parts[-1], _ = os.path.splitext(parts[-1])
             self._module_name = ".".join(parts)
+        else:
+            self._module_name = None
 
     def run(self):
         for error in collect_errors(self._tree, self._module_name):
