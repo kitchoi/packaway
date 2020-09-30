@@ -65,6 +65,14 @@ However, ``package.person._greeting`` should not be allowed to import
 ``package.office._legal.api`` because ``package.office._legal`` is only
 visible within ``package.office``.
 
+See the ``examples/package`` folder for more examples.
+
+Limitations
+-----------
+This tool does not capture accessing privately named attribute on a module
+(an object in general) that can otherwise be imported following the above
+rules.
+
 Motivation
 ----------
 Python does not enforce encapsulations. While this is enpowering for use cases
