@@ -52,6 +52,21 @@ class TestImportCheckPlugin(unittest.TestCase):
         )
         self.assertEqual(results, [])
 
+    def test_good_example_with_absolute_import(self):
+        results = get_results(
+            source="import package.name",
+        )
+        self.assertEqual(results, [])
+
+    def test_bad_example_with_absolute_import(self):
+        results = get_results(
+            source="import package._name",
+        )
+        self.assertEqual(
+            results,
+            ["1:0 DEP401 Importing private name 'package._name'."]
+        )
+
     def test_different_top_level_dir(self):
         with restore_plugin_global_states():
             ImportChecker._top_level_dir = "_package"

@@ -80,6 +80,19 @@ class _ImportAnalyzer(ast.NodeVisitor):
         self.module_name = module_name
         self._errors = []
 
+    def visit_Import(self, node):
+        for alias in node.names:
+            target = alias.name
+            if not _is_valid_import(self.module_name, target):
+                self._errors.append(
+                    ImportRuleViolation(
+                        lineno=node.lineno,
+                        col_offset=node.col_offset,
+                        message=f"Importing private name {target!r}.",
+                    )
+                )
+        self.generic_visit(node)
+
     def visit_ImportFrom(self, node):
 
         for alias in node.names:
