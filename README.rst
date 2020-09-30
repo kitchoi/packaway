@@ -1,53 +1,77 @@
 Packaging Static Checker
 ========================
 
-This is a project for experimenting with ways to (optionally) enforce
-encapsulation and access control with Python, using static code analysis.
+Packaway is a tool for enforcing encapsulation and access control in Python
+using static code checkers.
 
-The ``examples`` folder contains Python distributions for illustrating
-different packaging scenarios.
+Currently the distribution supplies a flake8 plugin.
 
-To install
+Installing
 ----------
 
-To use the optional Flake8 plugin, one should have ``flake8`` installed in
-their environment, and then install ``packaway`` from the source here::
+To install::
 
     $ pip install .
 
+To lint your file::
 
-Examples
---------
+    $ flake8 example.py
 
-Trying to run the flake8 plugin with the ``examples/test_and_trace`` folder
-should result in two errors.
+Packaging rules
+---------------
 
-For a module ``_duration`` under this absolute name::
+Whether a module is internal or not is indicated by whether its name has a
+single preceding underscore. If it does, then it is only "visible" within the
+package the module resides. Similarly, a function whose name has a preceding
+underscore is only "visible" to members with in the same module where the
+function is defined.
 
-    test_and_trace.screening._symptom_checker._algorithm._duration
+Suppose a project has the following structure::
 
-This import is okay::
+    ./package
+        ./person
+            __init__.py
+            api.py
+            _greeting.py
+            _reading.py
+        ./office
+            __init__.py
+            api.py
+            ./_legal
+                __init__.py
+                api.py
+                _compliance.py
+            ./_accounting
+                __init__.py
+                api.py
+                _booking.py
 
-    from test_and_trace.screening._symptom_checker._symptom_names import NAMES
+Take ``package.office._legal._complicance`` for example, it is only visible to
+modules within ``package.office._legal`` but not modules outside of
+``package.office._legal``. e.g. Importing ``package.office._legal._complicance``
+in ``package.person.api`` would be a violation of the encapsulation intended.
 
-This is because ``_symptom_checker`` is visible to anything within
-``_symptom_checker``, and the ``_duration`` is within the ``_symptom_checker``
-package.
+Motivation
+----------
+Encapsulation is a concept not restricted to object-oriented programming, it
+is an idea of lowering coupling and inter-module dependencies by hiding
+information.
 
-But this is not allowed::
+Many programming languages (e.g. Java, C#, C++) offer programmers way to
+control over what is hidden and what is accessible via "access modifiers"
+or keywords such as "public", "private" and "internal". These protections are
+enforced by the compilers, but can be overruled with some efforts.
 
-    from test_and_trace.screening._urgency_checker import _priority
+Python does not enforce encapsulations. While this is enpowering for use cases
+where encapsulation matters little (e.g. scripting) and has made Python hugely
+accessible to beginners, this means more disciplines are required for
+developers working on large systems (with great powers come great
+responsibilities).
 
-Because although ``_urgency_checker`` is visible to anything within
-``screening``, this import is accessing a private name ``_priority`` within
-``_urgency_checker`` and ``_priority`` should only be visible
-within ``_urgency_checker``.
-
-But this is okay::
-
-    from test_and_trace.screening._urgency_checker import api
-
-Because ``api`` is public, it is just as visible as ``_urgency_checker`` is
-to anything within ``screening``.
-
-(See ``examples/test_and_trace/screening/_symptom_checker/_algorithm/_duration.py``)
+Python developers often rely on implicit naming conventions such as a name with
+a preceding underscore to signal something being hidden. However this can only
+be enforced by vigorous code review, and for a team of developers with
+different skill levels, this is difficult to achieve for a large project.
+Even the most seasoned developer with the best intention could still make
+mistakens, especially if the intended visibility of a software component isn't
+obvious.
