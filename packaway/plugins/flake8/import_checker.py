@@ -6,11 +6,24 @@ from packaway.import_analyzer import collect_errors
 
 
 class ImportChecker:
+    """ Flake8 plugin for checking disallowed imports following
+    the packaging rules.
+    """
 
+    # Name of the plugin (visible via flake8)
     name = "packaway-import"
+
+    # Version of the plugin
     version = __version__
+
+    # Error code when a violation occurs
     _code = "DEP401"
+
+    # Top level directory to use when composing module names from file paths.
+    # Used for handling absolute imports. Not used if _deduce_path is false.
     _top_level_dir = None
+
+    # Flag to switch off deducing module names from file paths.
     _deduce_path = True
 
     def __init__(self, tree, filename):
