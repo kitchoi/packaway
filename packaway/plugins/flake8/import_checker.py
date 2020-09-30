@@ -20,9 +20,9 @@ def _find_module_name(tokens):
 
 class ImportChecker:
 
-    name = __name__
+    name = "packaway-import"
     version = "0.1.0"
-    _code = "ARC1"
+    _code = "DEP401"
     _top_level_dir = None
     _deduce_path = True
 

@@ -8,7 +8,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     entry_points={
         "flake8.extension": [
-            'ARC = packaway.plugins.flake8.import_checker:ImportChecker',
+            'DEP = packaway.plugins.flake8.import_checker:ImportChecker',
         ],
     },
 )
