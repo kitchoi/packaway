@@ -1,12 +1,14 @@
 import os
 import pathlib
+
+from packaway import __version__
 from packaway.import_analyzer import collect_errors
 
 
 class ImportChecker:
 
     name = "packaway-import"
-    version = "0.1.0"
+    version = __version__
     _code = "DEP401"
     _top_level_dir = None
     _deduce_path = True
