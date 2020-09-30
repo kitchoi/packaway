@@ -11,7 +11,7 @@ Installing
 
 To install::
 
-    $ pip install .
+    $ pip install packaway
 
 To lint your file::
 
