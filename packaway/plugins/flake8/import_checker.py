@@ -17,7 +17,9 @@ class ImportChecker:
         if self._deduce_path:
             path = pathlib.PurePath(filename)
             if self._top_level_dir is not None:
-                path = path.relative_to(self._top_level_dir)
+                path = (
+                    pathlib.PurePath(self._top_level_dir).joinpath(path)
+                )
             parts = list(path.parts)
             parts[-1], _ = os.path.splitext(parts[-1])
             self._module_name = ".".join(parts)
