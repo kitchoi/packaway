@@ -47,7 +47,7 @@ class TestImportCheckPlugin(unittest.TestCase):
 
     def test_good_example_with_filename(self):
         results = get_results(
-            source="import package._name",
+            source="from package import _name",
             filename=os.path.join("package", "module.py"),
         )
         self.assertEqual(results, [])
@@ -60,3 +60,15 @@ class TestImportCheckPlugin(unittest.TestCase):
                 filename="module.py",
             )
             self.assertEqual(results, [])
+
+    def test_no_deduce_path(self):
+        with restore_plugin_global_states():
+            ImportChecker._deduce_path = False
+            results = get_results(
+                source="from package import _name",
+                filename=os.path.join("package", "module.py"),
+            )
+            self.assertEqual(
+                results,
+                ["1:0 DEP401 Importing private name 'package._name'."]
+            )
