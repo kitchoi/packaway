@@ -53,25 +53,23 @@ in ``package.person.api`` would be a violation of the encapsulation intended.
 
 Motivation
 ----------
-Encapsulation is a concept not restricted to object-oriented programming, it
-is an idea of lowering coupling and inter-module dependencies by hiding
-information.
-
-Many programming languages (e.g. Java, C#, C++) offer programmers way to
-control over what is hidden and what is accessible via "access modifiers"
-or keywords such as "public", "private" and "internal". These protections are
-enforced by the compilers, but can be overruled with some efforts.
-
 Python does not enforce encapsulations. While this is enpowering for use cases
-where encapsulation matters little (e.g. scripting) and has made Python hugely
-accessible to beginners, this means more disciplines are required for
-developers working on large systems (with great powers come great
-responsibilities).
+where encapsulation matters little and has made Python hugely accessible to
+beginners, this means more disciplines are required for developers working on
+large systems (with great powers come great responsibilities).
 
-Python developers often rely on implicit naming conventions such as a name with
-a preceding underscore to signal something being hidden. However this can only
-be enforced by vigorous code review, and for a team of developers with
+Consequently, Python developers often rely on implicit naming conventions such
+as a preceding underscore to signal something being hidden. However this can
+only be enforced by vigorous code review. For a team of developers with
 different skill levels, this is difficult to achieve for a large project.
 Even the most seasoned developer with the best intention could still make
 mistakens, especially if the intended visibility of a software component isn't
 obvious.
+
+Many programming languages (e.g. Java, C#, C++) offer programmers ways to
+control over what is hidden and what is accessible via "access modifiers"
+or keywords such as "public", "private" and "internal". These protections are
+enforced by the compilers, but can be overruled with some efforts.
+
+Packaway is created in order to provide a relatively easy way to enforce
+encapsulation in Python at the module level in a way that is not intrusive.
