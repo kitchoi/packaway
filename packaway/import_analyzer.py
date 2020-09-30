@@ -18,7 +18,7 @@ class ImportRuleViolation:
         )
 
 
-def is_valid_import(source_module, target_module, level=0):
+def _is_valid_import(source_module, target_module, level=0):
     """ Return whether an import is allowed.
 
     Parameters
@@ -88,7 +88,7 @@ class _ImportAnalyzer(ast.NodeVisitor):
             else:
                 target = ".".join([node.module, alias.name])
 
-            if not is_valid_import(self.module_name, target, node.level):
+            if not _is_valid_import(self.module_name, target, node.level):
                 self._errors.append(
                     ImportRuleViolation(
                         lineno=node.lineno,

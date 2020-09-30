@@ -1,8 +1,8 @@
 import ast
 import unittest
 
-from packaway.import_analyzer import (
-    is_valid_import,
+from packaway.import_analyzer import (   # noqa: DEP401
+    _is_valid_import,
     collect_errors,
 )
 
@@ -19,7 +19,7 @@ class TestImport(unittest.TestCase):
         for source, target_module in good_examples:
             with self.subTest(source=source, target_module=target_module):
                 self.assertTrue(
-                    is_valid_import(
+                    _is_valid_import(
                         source_module=source,
                         target_module=target_module,
                     )
@@ -34,7 +34,7 @@ class TestImport(unittest.TestCase):
         for source, target_module in bad_examples:
             with self.subTest(source=source, target_module=target_module):
                 self.assertFalse(
-                    is_valid_import(
+                    _is_valid_import(
                         source_module=source,
                         target_module=target_module,
                     )
@@ -56,7 +56,7 @@ class TestImport(unittest.TestCase):
                     target_module=target_module,
                     level=level):
                 self.assertTrue(
-                    is_valid_import(
+                    _is_valid_import(
                         source_module=source,
                         target_module=target_module,
                         level=level,
@@ -75,7 +75,7 @@ class TestImport(unittest.TestCase):
         for source, target_module in bad_examples:
             with self.subTest(source=source, target_module=target_module):
                 self.assertFalse(
-                    is_valid_import(
+                    _is_valid_import(
                         source_module=source,
                         target_module=target_module,
                         level=1,
