@@ -37,6 +37,7 @@ Suppose a project has the following structure::
         ./office
             __init__.py
             api.py
+            _hours.py
             ./_legal
                 __init__.py
                 api.py
@@ -46,10 +47,23 @@ Suppose a project has the following structure::
                 api.py
                 _booking.py
 
-Take ``package.office._legal._complicance`` for example, it is only visible to
-modules within ``package.office._legal`` but not modules outside of
-``package.office._legal``. e.g. Importing ``package.office._legal._complicance``
-in ``package.person.api`` would be a violation of the encapsulation intended.
+Example 1:
+``package.office._legal._complicance``, being named with a preceding
+underscore, it is only visible to modules within ``package.office._legal`` but
+not modules outside of ``package.office._legal``. Importing
+``package.office._legal._complicance`` in ``package.person.api`` would be a
+violation of the encapsulation intended.
+
+Example 2:
+``package.office._legal.api`` being named WITHOUT a preceding underscore,
+indicates that it is as visible as ``package.office._legal`` is to members
+within ``package.office``. ``package.office._accounting._booking`` is allowed
+to import from ``package.office._legal.api`` because it is a member of
+``package.office``.
+
+However, ``package.person._greeting`` should not be allowed to import
+``package.office._legal.api`` because ``package.office._legal`` is only
+visible within ``package.office``.
 
 Motivation
 ----------
