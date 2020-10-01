@@ -14,6 +14,7 @@ setuptools.setup(
     license="MIT",
     version=VERSION,
     description="Static Checker to Enforce (Some) Encapsulation in Python.",
+    author="Kit Yan Choi",
     packages=setuptools.find_packages(),
     long_description=long_description,
     long_description_content_type="text/x-rst",
