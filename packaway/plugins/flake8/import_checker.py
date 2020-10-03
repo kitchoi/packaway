@@ -30,11 +30,9 @@ class ImportChecker:
         self._tree = tree
 
         if self._deduce_path:
-            path = pathlib.PurePath(filename)
             if self._top_level_dir is not None:
-                path = (
-                    pathlib.PurePath(self._top_level_dir).joinpath(path)
-                )
+                filename = os.path.relpath(filename, start=self._top_level_dir)
+            path = pathlib.PurePath(filename)
             parts = list(path.parts)
             parts[-1], _ = os.path.splitext(parts[-1])
             self._module_name = ".".join(parts)

@@ -1,6 +1,7 @@
 import ast
 import contextlib
 import os
+import tempfile
 import unittest
 
 from packaway.plugins.flake8.import_checker import ImportChecker
@@ -12,6 +13,16 @@ def get_results(source, filename="dummy.py"):
     return [
         f"{line}:{col} {msg}" for line, col, msg, _ in plugin.run()
     ]
+
+
+@contextlib.contextmanager
+def change_dir(dir):
+    cwd = os.getcwd()
+    os.chdir(dir)
+    try:
+        yield
+    finally:
+        os.chdir(cwd)
 
 
 @contextlib.contextmanager
@@ -68,10 +79,19 @@ class TestImportCheckPlugin(unittest.TestCase):
         )
 
     def test_different_top_level_dir(self):
-        with restore_plugin_global_states():
-            ImportChecker._top_level_dir = "_package"
+        # Test setting --top-level-dir to support absolute import
+        # while running flake8 from a different directory.
+        with tempfile.TemporaryDirectory(prefix="_") as tmp_dir, \
+                restore_plugin_global_states(), \
+                change_dir(tmp_dir):
+
+            with open(os.path.join(tmp_dir, "module.py"), "w"):
+                pass
+
+            _, dir_name = os.path.split(tmp_dir)
+            ImportChecker._top_level_dir = ".."
             results = get_results(
-                source="from _package._module import api",
+                source=f"from {dir_name}._module import api",
                 filename="module.py",
             )
             self.assertEqual(results, [])
