@@ -84,14 +84,14 @@ Motivation
 Python does not enforce encapsulations. While this is enpowering for use cases
 where encapsulation matters little and has made Python hugely accessible to
 beginners, this means more disciplines are required for developers working on
-large systems (with great powers come great responsibilities).
+large systems (with great power comes great responsibility).
 
 Consequently, Python developers often rely on implicit naming conventions such
 as a preceding underscore to signal something being hidden. However this can
 only be enforced by vigorous code review. For a team of developers with
 different skill levels, this is difficult to achieve for a large project.
 Even the most seasoned developer with the best intention could still make
-mistakens, especially if the intended visibility of a software component isn't
+mistakes, especially if the intended visibility of a software component isn't
 obvious.
 
 Many programming languages (e.g. Java, C#, C++) offer programmers ways to
