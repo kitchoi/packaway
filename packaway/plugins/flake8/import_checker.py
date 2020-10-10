@@ -2,7 +2,7 @@ import os
 import pathlib
 
 from packaway import __version__
-from packaway.import_analyzer import collect_errors
+from packaway.underscore_rule import collect_errors
 
 
 class ImportChecker:

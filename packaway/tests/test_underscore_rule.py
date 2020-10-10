@@ -1,7 +1,7 @@
 import ast
 import unittest
 
-from packaway.import_analyzer import (   # noqa: DEP401
+from packaway.underscore_rule import (   # noqa: DEP401
     _is_valid_import,
     collect_errors,
 )
