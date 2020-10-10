@@ -2,7 +2,13 @@ import os
 import pathlib
 
 from packaway import __version__
-from packaway.underscore_rule import collect_errors
+from packaway.underscore_rule import collect_errors as _underscore_rule
+
+
+# Mapping from flake8 error code to callable(tree, module_name)
+_CODE_TO_CHECKER = {
+    "DEP401": _underscore_rule,
+}
 
 
 class ImportChecker:
@@ -15,9 +21,6 @@ class ImportChecker:
 
     # Version of the plugin
     version = __version__
-
-    # Error code when a violation occurs
-    _code = "DEP401"
 
     # Top level directory to use when composing module names from file paths.
     # Used for handling absolute imports. Not used if _deduce_path is false.
@@ -40,13 +43,14 @@ class ImportChecker:
             self._module_name = None
 
     def run(self):
-        for error in collect_errors(self._tree, self._module_name):
-            yield (
-                error.lineno,
-                error.col_offset,
-                self._code + " " + error.message,
-                type(self),
-            )
+        for code, rule in _CODE_TO_CHECKER.items():
+            for error in rule(self._tree, self._module_name):
+                yield (
+                    error.lineno,
+                    error.col_offset,
+                    code + " " + error.message,
+                    type(self),
+                )
 
     @classmethod
     def add_options(cls, option_manager):
