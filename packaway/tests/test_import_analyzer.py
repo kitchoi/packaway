@@ -7,7 +7,8 @@ from packaway.import_analyzer import (   # noqa: DEP401
 )
 
 
-class TestImport(unittest.TestCase):
+class TestValidImport(unittest.TestCase):
+    """ Test _is_valid_import """
 
     def test_is_valid_import_okay(self):
         good_examples = [
@@ -84,7 +85,7 @@ class TestImport(unittest.TestCase):
 
 
 class TestAnalyzerAPI(unittest.TestCase):
-    """ Test the top-level analyzer behaviour."""
+    """ Test the top-level analyzer behaviour using the packaging rules."""
 
     def test_ok_examples(self):
         good_sources = [
