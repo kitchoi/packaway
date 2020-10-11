@@ -65,6 +65,7 @@ class ImportChecker:
             dest="top_level_dir",
             default=None,
             help="Top level directory for parsing file paths as module names.",
+            parse_from_config=True,
         )
 
     @classmethod
