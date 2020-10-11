@@ -1,7 +1,7 @@
 from functools import partial
 import re
 
-from packaway._ast_analyzer import ImportAnalyzer
+from packaway.rules._ast_analyzer import ImportAnalyzer
 
 
 def _is_valid_import(source_module, target_module, disallowed):
