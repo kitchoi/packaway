@@ -138,9 +138,10 @@ class TestImportCheckPluginRegexRule(unittest.TestCase):
     def test_bad_example(self):
         results = get_results(
             source="from package.gui.api import name",
+            filename=os.path.join("package", "module.py"),
             plugin_class=parse_args(
                 ImportChecker,
-                ["--disallowed", '.*gui.*']
+                ["--disallowed", 'package/*:.*gui.*']
             )
         )
         self.assertEqual(

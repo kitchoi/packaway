@@ -1,3 +1,4 @@
+import fnmatch
 from functools import partial
 import os
 import pathlib
@@ -24,12 +25,15 @@ class ImportChecker:
     # Flag to switch off deducing module names from file paths.
     _deduce_path = True
 
-    # List of regular expression patterns for disallowed imports after
-    # the import name is resolved into an absolute name.
-    _disallowed_patterns = None
+    # List of tuple(str, str)
+    # For each tuple, the first item is the pattern for matching filename
+    # and the second item is the regular expression for matching disallowed
+    # imports after the import name is resolved into an absolute name.
+    _disallowed_patterns = ()
 
     def __init__(self, tree, filename):
         self._tree = tree
+        self._filename = filename
 
         if self._deduce_path:
             if self._top_level_dir is not None:
@@ -45,11 +49,17 @@ class ImportChecker:
     def _code_to_checker(self):
         """ Mapping from flake8 error code to callable(tree, module_name)
         """
+        rel_path = os.path.relpath(self._filename, os.curdir)
+        disallowed_patterns = []
+        for file_pattern, disallowed_pattern in self._disallowed_patterns:
+            if fnmatch.fnmatch(rel_path, file_pattern):
+                disallowed_patterns.append(disallowed_pattern)
+
         return {
             "DEP401": underscore_rule.collect_errors,
             "DEP501": partial(
                 regex_rule.collect_errors,
-                disallowed_patterns=self._disallowed_patterns,
+                disallowed_patterns=disallowed_patterns,
             ),
         }
 
@@ -81,11 +91,11 @@ class ImportChecker:
         option_manager.add_option(
             "--disallowed",
             dest="disallowed_patterns",
-            default=None,
-            comma_separated_list=True,
+            default="",
+            parse_from_config=True,
             help=(
-                "Regular expressions for matching module names disallowed "
-                "in imports"
+                "A pairing of filenames and regular expression for matching "
+                "module names not allowed in imports."
             ),
         )
 
@@ -93,4 +103,26 @@ class ImportChecker:
     def parse_options(cls, options):
         cls._top_level_dir = options.top_level_dir
         cls._deduce_path = not options.no_deduce_path
-        cls._disallowed_patterns = options.disallowed_patterns
+        cls._disallowed_patterns = (
+            _parse_disallowed_patterns(options.disallowed_patterns)
+        )
+
+
+def _parse_disallowed_patterns(disallowed_patterns):
+    """ Parse disallowed patterns from flake8 options.
+
+    Parameters
+    ----------
+    disallowed_patterns : str
+        Configuration that represents a pairing of filename pattern
+        and regular expression for disallowed import.
+        Multiple items should be separated by newlines.
+    """
+    results = []
+    disallowed_patterns = disallowed_patterns.replace(" ", "")
+    for rule in disallowed_patterns.splitlines():
+        if not rule:
+            continue
+        file_pattern, disallowed = rule.split(":")
+        results.append((file_pattern.strip(), disallowed.strip()))
+    return results
