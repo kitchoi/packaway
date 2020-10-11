@@ -29,8 +29,8 @@ To lint your file::
 
 This plugin currently provides two import rules:
 
-#. DEP401: Importing modules which are private
-#. DEP501: Local import rule specified using regular expressions.
+#. DEP401: Disallowing import of private modules
+#. DEP501: Disallowing imports using regular expression patterns
 
 DEP401: Packaging rules using underscores
 -----------------------------------------
