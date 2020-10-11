@@ -34,9 +34,9 @@ def _is_valid_import(source_module, target_module):
 
     for part in target_parts[n_common_levels + 1:]:
         if part.startswith("_"):
-            return False
+            return False, f"Importing private name {target_module!r}.",
     else:
-        return True
+        return True, ""
 
 
 def collect_errors(tree, module_name=None):

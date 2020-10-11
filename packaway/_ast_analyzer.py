@@ -12,10 +12,13 @@ class ImportAnalyzer(ast.NodeVisitor):
     module_name : str or None
         The module name (full path) associated with the Python source
         being parsed. None if this is unknown.
-    import_rules : list of callable`(source_module: str, target_module: str)
-        List of callables which return true if the import is valid.
+    import_rules : list of callable(str, str) -> tuple(bool, str)
+        List of callables for validating the import.
         First argument is the current module name.
         Second argument is the (absolute) module name to be imported.
+        The callable should return (valid, reason) where the first value
+        is whether the import is valid, and the second value is the reason
+        if there is a violation (not used if the import is valid.)
     """
 
     def __init__(self, module_name=None, import_rules=None):
@@ -27,12 +30,13 @@ class ImportAnalyzer(ast.NodeVisitor):
         for alias in node.names:
             target = alias.name
             for import_rule in self.import_rules:
-                if not import_rule(self.module_name, target):
+                is_valid, reason = import_rule(self.module_name, target)
+                if not is_valid:
                     self._errors.append(
                         ImportRuleViolation(
                             lineno=node.lineno,
                             col_offset=node.col_offset,
-                            message=f"Importing private name {target!r}.",
+                            message=reason,
                         )
                     )
         self.generic_visit(node)
@@ -49,12 +53,13 @@ class ImportAnalyzer(ast.NodeVisitor):
                 self.module_name, target, node.level
             )
             for import_rule in self.import_rules:
-                if not import_rule(self.module_name, target):
+                is_valid, reason = import_rule(self.module_name, target)
+                if not is_valid:
                     self._errors.append(
                         ImportRuleViolation(
                             lineno=node.lineno,
                             col_offset=node.col_offset,
-                            message=f"Importing private name {target!r}.",
+                            message=reason,
                         )
                     )
         self.generic_visit(node)
