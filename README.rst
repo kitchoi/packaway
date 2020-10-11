@@ -64,15 +64,14 @@ Suppose a project has the following structure::
 
 One may use the plugin to capture the following import violations::
 
-```
-./office/api.py:7:1: DEP401 Importing private name 'person._reading'.
-./office/api.py:13:1: DEP401 Importing private name 'office._legal._compliance'.
-./office/_hours.py:2:1: DEP401 Importing private name 'office._accounting._booking'.
-./office/_hours.py:8:1: DEP401 Importing private name 'package.office._legal.api'.
-./office/_legal/_compliance.py:8:1: DEP401 Importing private name 'office._accounting._booking'.
-./person/_greeting.py:5:1: DEP401 Importing private name 'person._reading._private_name'.
-./person/api.py:5:1: DEP401 Importing private name 'person._reading._private_name'.
-```
+    ./office/api.py:7:1: DEP401 Importing private name 'person._reading'.
+    ./office/api.py:13:1: DEP401 Importing private name 'office._legal._compliance'.
+    ./office/_hours.py:2:1: DEP401 Importing private name 'office._accounting._booking'.
+    ./office/_hours.py:8:1: DEP401 Importing private name 'package.office._legal.api'.
+    ./office/_legal/_compliance.py:8:1: DEP401 Importing private name 'office._accounting._booking'.
+    ./person/_greeting.py:5:1: DEP401 Importing private name 'person._reading._private_name'.
+    ./person/api.py:5:1: DEP401 Importing private name 'person._reading._private_name'.
+
 
 See the ``examples/package`` folder for this example.
 
@@ -99,11 +98,9 @@ The ``business`` package contains business logic and should not import from
 the ``web`` package. In this case, one can add the following rule to the
 configuration file for flake8::
 
-```
-[flake8]
-disallowed =
-    business/*: web.*
-```
+    [flake8]
+    disallowed =
+        business/*: web.*
 
 See the ``examples/regex_rule_example`` folder for this example.
 
