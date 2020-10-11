@@ -4,12 +4,14 @@ import os
 import tempfile
 import unittest
 
+from flake8.options.manager import OptionManager
+
 from packaway.plugins.flake8.import_checker import ImportChecker
 
 
-def get_results(source, filename="dummy.py"):
+def get_results(source, filename="dummy.py", plugin_class=ImportChecker):
     tree = ast.parse(source)
-    plugin = ImportChecker(tree=tree, filename=filename)
+    plugin = plugin_class(tree=tree, filename=filename)
     return [
         f"{line}:{col} {msg}" for line, col, msg, _ in plugin.run()
     ]
@@ -25,21 +27,34 @@ def change_dir(dir):
         os.chdir(cwd)
 
 
-@contextlib.contextmanager
-def restore_plugin_global_states():
-    """ Context manager to make sure plugin class variables are restored when
-    the context exits.
+def parse_args(plugin_class, args):
+    """ Return a new plugin class with the argument options parsed.
+
+    Parameters
+    ----------
+    plugin_class : type
+        The object to be used as a flake8 extension.
+    args : list of str
+        Argument options to be parsed.
+
+    Returns
+    -------
+    new_plugin_class : subclass of plugin_class
     """
-    top_level_dir = ImportChecker._top_level_dir
-    deduce_path = ImportChecker._deduce_path
-    try:
-        yield
-    finally:
-        ImportChecker._top_level_dir = top_level_dir
-        ImportChecker._deduce_path = deduce_path
+
+    class TmpPlugin(plugin_class):
+        pass
+
+    prog = "flake8"
+    manager = OptionManager(prog, TmpPlugin.version)
+    TmpPlugin.add_options(manager)
+    options, _ = manager.parse_args(args)
+    TmpPlugin.parse_options(options)
+    return TmpPlugin
 
 
-class TestImportCheckPlugin(unittest.TestCase):
+class TestImportCheckPluginUnderscoreRule(unittest.TestCase):
+    """ Test Underscore rule (DEP401) provided by the plugin."""
 
     def test_good_example(self):
         results = get_results(
@@ -82,28 +97,30 @@ class TestImportCheckPlugin(unittest.TestCase):
         # Test setting --top-level-dir to support absolute import
         # while running flake8 from a different directory.
         with tempfile.TemporaryDirectory(prefix="_") as tmp_dir, \
-                restore_plugin_global_states(), \
                 change_dir(tmp_dir):
 
             with open(os.path.join(tmp_dir, "module.py"), "w"):
                 pass
 
             _, dir_name = os.path.split(tmp_dir)
-            ImportChecker._top_level_dir = ".."
             results = get_results(
                 source=f"from {dir_name}._module import api",
                 filename="module.py",
+                plugin_class=parse_args(
+                    ImportChecker, ["--top-level-dir", ".."]
+                ),
             )
             self.assertEqual(results, [])
 
     def test_no_deduce_path(self):
-        with restore_plugin_global_states():
-            ImportChecker._deduce_path = False
-            results = get_results(
-                source="from package import _name",
-                filename=os.path.join("package", "module.py"),
-            )
-            self.assertEqual(
-                results,
-                ["1:0 DEP401 Importing private name 'package._name'."]
-            )
+        results = get_results(
+            source="from package import _name",
+            filename=os.path.join("package", "module.py"),
+            plugin_class=parse_args(
+                ImportChecker, ["--no-deduce-path"]
+            ),
+        )
+        self.assertEqual(
+            results,
+            ["1:0 DEP401 Importing private name 'package._name'."]
+        )
