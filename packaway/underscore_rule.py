@@ -12,14 +12,7 @@ def _is_valid_import(source_module, target_module):
         If given, this name should be absolute.
     target_module : str
         Name of the module being imported.
-        This name can be absolute or relative depending on the value
-        of ``level``.
-    level : int, optional
-        level specifies whether to use absolute or relative
-        imports. 0 (the default) means only perform absolute
-        imports. Positive values for level indicate the number
-        of parent directories to search relative to the directory
-        of the module calling import.
+        The name should be an absolute name.
     """
 
     if source_module is None:
