@@ -24,6 +24,12 @@ setuptools.setup(
             'DEP = packaway.plugins.flake8.import_checker:ImportChecker',
         ],
     },
+    install_requires=[],
+    extras_require={
+        "test": [
+            "flake8",
+        ],
+    },
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
