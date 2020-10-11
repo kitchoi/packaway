@@ -90,17 +90,26 @@ Suppose a project has the following structure::
             ./subpackage
                 __init__.py
                 bad.py
+        ./data
+            __init__.py
+            api.py
         ./web
             __init__.py
             api.py
 
 The ``business`` package contains business logic and should not import from
-the ``web`` package. In this case, one can add the following rule to the
-configuration file for flake8::
+the ``web`` nor the ``data`` package. In this case, one can add the following
+rules to the configuration file for flake8::
 
     [flake8]
     disallowed =
         business/*: web.*
+        business/subpackage/*: data.*
+
+On the right hand side is the regular expression for matching disallowed import
+module names (after being normalized to an absolute import). On the left hand
+side are UNIX-style patterns for matching source files on which the import rule
+applies.
 
 See the ``examples/regex_rule_example`` folder for this example.
 
