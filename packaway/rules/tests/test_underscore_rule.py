@@ -1,7 +1,7 @@
 import ast
 import unittest
 
-from packaway.underscore_rule import (
+from packaway.rules.underscore_rule import (
     collect_errors,
 )
 

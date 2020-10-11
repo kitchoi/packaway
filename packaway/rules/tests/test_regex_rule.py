@@ -1,7 +1,7 @@
 import ast
 import unittest
 
-from packaway.regex_rule import collect_errors
+from packaway.rules.regex_rule import collect_errors
 
 
 class TestRegexRule(unittest.TestCase):

@@ -2,12 +2,12 @@ import os
 import pathlib
 
 from packaway import __version__
-from packaway.underscore_rule import collect_errors as _underscore_rule
+from packaway.rules import underscore_rule
 
 
 # Mapping from flake8 error code to callable(tree, module_name)
 _CODE_TO_CHECKER = {
-    "DEP401": _underscore_rule,
+    "DEP401": underscore_rule.collect_errors,
 }
 
 
