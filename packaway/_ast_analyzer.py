@@ -49,8 +49,12 @@ class ImportAnalyzer(ast.NodeVisitor):
                 target = alias.name
             else:
                 target = ".".join([node.module, alias.name])
+
+            target = _normalize_target_module(
+                self.module_name, target, node.level
+            )
             for import_rule in self.import_rules:
-                if not import_rule(self.module_name, target, level=node.level):
+                if not import_rule(self.module_name, target):
                     self._errors.append(
                         ImportRuleViolation(
                             lineno=node.lineno,
@@ -59,3 +63,32 @@ class ImportAnalyzer(ast.NodeVisitor):
                         )
                     )
         self.generic_visit(node)
+
+
+def _normalize_target_module(source_module, target_module, level):
+    """ Normalize relative import to absolute import.
+
+    Parameters
+    ----------
+    source_module : str or None
+        Name of the module where the import is written.
+        If given, this name should be absolute.
+    target_module : str
+        Name of the module being imported.
+        This name can be absolute or relative depending on the value
+        of ``level``.
+    level : int, optional
+        level specifies whether to use absolute or relative
+        imports. 0 (the default) means only perform absolute
+        imports. Positive values for level indicate the number
+        of parent directories to search relative to the directory
+        of the module calling import.
+    """
+    if source_module is None or level == 0:
+        return target_module
+
+    source_parts = source_module.split(".")
+    if level > len(source_parts):
+        raise ValueError("Level is too deep.")
+    target_parts = source_parts[:-level] + target_module.split(".")
+    return ".".join(target_parts)
