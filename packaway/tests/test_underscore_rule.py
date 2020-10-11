@@ -1,87 +1,9 @@
 import ast
 import unittest
 
-from packaway.underscore_rule import (   # noqa: DEP401
-    _is_valid_import,
+from packaway.underscore_rule import (
     collect_errors,
 )
-
-
-class TestValidImport(unittest.TestCase):
-    """ Test _is_valid_import """
-
-    def test_is_valid_import_okay(self):
-        good_examples = [
-            # List of (source_module, target_module)
-            ("package.module1", "package.module2"),
-            ("package.module1", "package._module2"),
-            ("package.subpackage.module1", "package.subpackage._module2"),
-        ]
-        for source, target_module in good_examples:
-            with self.subTest(source=source, target_module=target_module):
-                self.assertTrue(
-                    _is_valid_import(
-                        source_module=source,
-                        target_module=target_module,
-                    )
-                )
-
-    def test_is_valid_import_not_okay(self):
-        bad_examples = [
-            # List of (source_module, target_module)
-            ("package.module1", "package.subpackage._module3"),
-            ("package.subpackage1.module1", "package.subpackage2._module2"),
-        ]
-        for source, target_module in bad_examples:
-            with self.subTest(source=source, target_module=target_module):
-                self.assertFalse(
-                    _is_valid_import(
-                        source_module=source,
-                        target_module=target_module,
-                    )
-                )
-
-    def test_relative_import_okay(self):
-        # With level 1, means the source is importing
-        # target with code like `from .package import module`
-        good_examples = [
-            # List of (source_module, target_module, level)
-            ("package.module1", "module2", 1),
-            ("package.module1", "_module2", 1),
-            ("package.subpackage.module1", "_module2", 1),
-            ("package.subpackage.module2", "subpackage._module1.name", 2),
-        ]
-        for source, target_module, level in good_examples:
-            with self.subTest(
-                    source=source,
-                    target_module=target_module,
-                    level=level):
-                self.assertTrue(
-                    _is_valid_import(
-                        source_module=source,
-                        target_module=target_module,
-                        level=level,
-                    )
-                )
-
-    def test_relative_import_not_okay_level_1(self):
-        # With level 1, means the source is importing
-        # target with code like `from .package import module`
-        bad_examples = [
-            # List of (source_module, target_module)
-            # The target is actually 'package.package._module2' if
-            # it was an absolute name.
-            ("package.module1", "package._module2"),
-        ]
-        for source, target_module in bad_examples:
-            with self.subTest(source=source, target_module=target_module):
-                self.assertFalse(
-                    _is_valid_import(
-                        source_module=source,
-                        target_module=target_module,
-                        level=1,
-                    )
-                )
 
 
 class TestAnalyzerAPI(unittest.TestCase):
