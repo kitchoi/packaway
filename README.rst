@@ -103,7 +103,7 @@ Suppose a project has the following structure::
 
 The ``business`` package contains business logic and should not import from
 the ``web`` package. In this case, one can add the following rule to the
-configuration file for flake8:
+configuration file for flake8::
 
 ```
 [flake8]
