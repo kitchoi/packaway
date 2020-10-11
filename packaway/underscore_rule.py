@@ -1,6 +1,4 @@
-import ast
 
-from packaway.violation import ImportRuleViolation
 from packaway._ast_analyzer import ImportAnalyzer
 
 
