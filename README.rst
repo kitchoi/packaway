@@ -13,6 +13,10 @@ To install::
 
     $ pip install packaway
 
+
+Flake8 plugin
+-------------
+
 To verify the packaway flake8 plugin is installed::
 
     $ flake8 --version
@@ -23,8 +27,13 @@ To lint your file::
     $ flake8 example.py
     example.py:1:1: DEP401 Importing private name 'package._name'.
 
-Packaging rules
----------------
+This plugin currently provides two import rules:
+
+#. DEP401: Importing modules which are private
+#. DEP501: Local import rule specified using regular expressions.
+
+DEP401: Packaging rules using underscores
+-----------------------------------------
 
 Whether a module is internal or not is indicated by whether its name has a
 single preceding underscore. If it does, then it is only "visible" within the
@@ -54,7 +63,7 @@ Suppose a project has the following structure::
                 _booking.py
 
 Example 1:
-``package.office._legal._complicance``, being named with a preceding
+``package.office._legal._compliance``, being named with a preceding
 underscore, it is only visible to modules within ``package.office._legal`` but
 not modules outside of ``package.office._legal``. Importing
 ``package.office._legal._complicance`` in ``package.person.api`` would be a
@@ -72,6 +81,37 @@ However, ``package.person._greeting`` should not be allowed to import
 visible within ``package.office``.
 
 See the ``examples/package`` folder for more examples.
+
+DEP501: Import rules using regular expressions
+----------------------------------------------
+
+There maybe situations where the use of preceding underscores may not be
+possible (e.g. backward compatibility constraints). One can specify import
+rules at a lower level using file name patterns and import module name
+patterns.
+
+Suppose a project has the following structure::
+
+    ./regex_rule_example
+        ./business
+            ./subpackage
+                __init__.py
+                bad.py
+        ./web
+            __init__.py
+            api.py
+
+The ``business`` package contains business logic and should not import from
+the ``web`` package. In this case, one can add the following rule to the
+configuration file for flake8:
+
+```
+[flake8]
+disallowed =
+    business/*: web.*
+```
+
+See the ``examples/regex_rule_example`` folder for this example.
 
 Limitations
 -----------
