@@ -12,15 +12,10 @@ class ImportAnalyzer(ast.NodeVisitor):
     module_name : str or None
         The module name (full path) associated with the Python source
         being parsed. None if this is unknown.
-    import_rules : list of callable
+    import_rules : list of callable`(source_module: str, target_module: str)
         List of callables which return true if the import is valid.
-        Each callable has a signature of
-        ``(source_module: str, target_module: str, level:int)``
         First argument is the current module name.
-        Second argument is the module name to be imported.
-        Last argument specifies whether to use absolute or relative
-        imports. 0 (the default) means only perform absolute
-        imports.
+        Second argument is the (absolute) module name to be imported.
     """
 
     def __init__(self, module_name=None, import_rules=None):
@@ -32,7 +27,7 @@ class ImportAnalyzer(ast.NodeVisitor):
         for alias in node.names:
             target = alias.name
             for import_rule in self.import_rules:
-                if not import_rule(self.module_name, target, level=0):
+                if not import_rule(self.module_name, target):
                     self._errors.append(
                         ImportRuleViolation(
                             lineno=node.lineno,
