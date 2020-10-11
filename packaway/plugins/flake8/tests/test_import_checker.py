@@ -124,3 +124,29 @@ class TestImportCheckPluginUnderscoreRule(unittest.TestCase):
             results,
             ["1:0 DEP401 Importing private name 'package._name'."]
         )
+
+
+class TestImportCheckPluginRegexRule(unittest.TestCase):
+    """ Test Regex rule (DEP501) provided by the plugin."""
+
+    def test_good_example(self):
+        results = get_results(
+            source="from . import module",
+        )
+        self.assertEqual(results, [])
+
+    def test_bad_example(self):
+        results = get_results(
+            source="from package.gui.api import name",
+            plugin_class=parse_args(
+                ImportChecker,
+                ["--disallowed", '.*gui.*']
+            )
+        )
+        self.assertEqual(
+            results,
+            [
+                "1:0 DEP501 "
+                "Import 'package.gui.api.name' violates pattern: '.*gui.*'"
+            ]
+        )

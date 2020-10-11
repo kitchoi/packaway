@@ -1,14 +1,9 @@
+from functools import partial
 import os
 import pathlib
 
 from packaway import __version__
-from packaway.rules import underscore_rule
-
-
-# Mapping from flake8 error code to callable(tree, module_name)
-_CODE_TO_CHECKER = {
-    "DEP401": underscore_rule.collect_errors,
-}
+from packaway.rules import regex_rule, underscore_rule
 
 
 class ImportChecker:
@@ -29,6 +24,10 @@ class ImportChecker:
     # Flag to switch off deducing module names from file paths.
     _deduce_path = True
 
+    # List of regular expression patterns for disallowed imports after
+    # the import name is resolved into an absolute name.
+    _disallowed_patterns = None
+
     def __init__(self, tree, filename):
         self._tree = tree
 
@@ -42,8 +41,20 @@ class ImportChecker:
         else:
             self._module_name = None
 
+    @property
+    def _code_to_checker(self):
+        """ Mapping from flake8 error code to callable(tree, module_name)
+        """
+        return {
+            "DEP401": underscore_rule.collect_errors,
+            "DEP501": partial(
+                regex_rule.collect_errors,
+                disallowed_patterns=self._disallowed_patterns,
+            ),
+        }
+
     def run(self):
-        for code, rule in _CODE_TO_CHECKER.items():
+        for code, rule in self._code_to_checker.items():
             for error in rule(self._tree, self._module_name):
                 yield (
                     error.lineno,
@@ -67,8 +78,19 @@ class ImportChecker:
             help="Top level directory for parsing file paths as module names.",
             parse_from_config=True,
         )
+        option_manager.add_option(
+            "--disallowed",
+            dest="disallowed_patterns",
+            default=None,
+            comma_separated_list=True,
+            help=(
+                "Regular expressions for matching module names disallowed "
+                "in imports"
+            ),
+        )
 
     @classmethod
     def parse_options(cls, options):
         cls._top_level_dir = options.top_level_dir
         cls._deduce_path = not options.no_deduce_path
+        cls._disallowed_patterns = options.disallowed_patterns
