@@ -1,6 +1,7 @@
 import ast
 
 from packaway.violation import ImportRuleViolation
+from packaway._ast_analyzer import ImportAnalyzer
 
 
 def _is_valid_import(source_module, target_module, level=0):
@@ -51,52 +52,6 @@ def _is_valid_import(source_module, target_module, level=0):
         return True
 
 
-class _ImportAnalyzer(ast.NodeVisitor):
-    """ NodeVisitor for analyzing an AST.
-
-    Parameters
-    ----------
-    module_name : str or None
-        The module name (full path) associated with the Python source
-        being parsed. None if this is unknown.
-    """
-
-    def __init__(self, module_name=None):
-        self.module_name = module_name
-        self._errors = []
-
-    def visit_Import(self, node):
-        for alias in node.names:
-            target = alias.name
-            if not _is_valid_import(self.module_name, target):
-                self._errors.append(
-                    ImportRuleViolation(
-                        lineno=node.lineno,
-                        col_offset=node.col_offset,
-                        message=f"Importing private name {target!r}.",
-                    )
-                )
-        self.generic_visit(node)
-
-    def visit_ImportFrom(self, node):
-
-        for alias in node.names:
-            if node.module is None:
-                target = alias.name
-            else:
-                target = ".".join([node.module, alias.name])
-
-            if not _is_valid_import(self.module_name, target, node.level):
-                self._errors.append(
-                    ImportRuleViolation(
-                        lineno=node.lineno,
-                        col_offset=node.col_offset,
-                        message=f"Importing private name {target!r}.",
-                    )
-                )
-        self.generic_visit(node)
-
-
 def collect_errors(tree, module_name=None):
     """ Top level function to detect violation of import rules.
 
@@ -114,6 +69,9 @@ def collect_errors(tree, module_name=None):
     errors : list of ImportRuleViolation
         Occurrences of import violation.
     """
-    analyzer = _ImportAnalyzer(module_name=module_name)
+    analyzer = ImportAnalyzer(
+        module_name=module_name,
+        import_rules=[_is_valid_import],
+    )
     analyzer.visit(tree)
     return analyzer._errors
