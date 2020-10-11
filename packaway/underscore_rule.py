@@ -61,7 +61,7 @@ def _is_valid_import(source_module, target_module, level=0):
         n_common_levels += 1
 
     for part in target_parts[n_common_levels + 1:]:
-        if part.startswith("_") and not part.startswith("__"):
+        if part.startswith("_"):
             return False
     else:
         return True
