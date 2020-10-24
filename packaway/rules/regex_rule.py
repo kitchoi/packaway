@@ -1,3 +1,6 @@
+""" This module supports disallowing imports using regular expressions.
+"""
+
 from functools import partial
 import re
 
@@ -5,6 +8,22 @@ from packaway.rules._ast_analyzer import ImportAnalyzer
 
 
 def _is_valid_import(source_module, target_module, disallowed):
+    """ Return whether an import is allowed.
+
+    Parameters
+    ----------
+    source_module : str
+        Name of the module where the import statement is.
+    target_module : str
+        Name being imported.
+    disallowed : str
+        Regular expression pattern to match. If matched, then the import is
+        invalid.
+
+    Returns
+    -------
+    valid : bool
+    """
     return (
         not re.match(disallowed, target_module),
         f"Import {target_module!r} violates pattern: {disallowed!r}",

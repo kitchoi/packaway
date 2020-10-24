@@ -1,4 +1,8 @@
 
+""" This module supports disallowing imports using leading underscores and
+packaging structures.
+"""
+
 from packaway.rules._ast_analyzer import ImportAnalyzer
 
 
@@ -13,6 +17,10 @@ def _is_valid_import(source_module, target_module):
     target_module : str
         Name of the module being imported.
         The name should be an absolute name.
+
+    Returns
+    -------
+    valid : bool
     """
 
     if source_module is None:

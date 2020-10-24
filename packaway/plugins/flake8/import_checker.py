@@ -32,6 +32,15 @@ class ImportChecker:
     _disallowed_patterns = ()
 
     def __init__(self, tree, filename):
+        """ Reimplemented Flake8 plugin initializer.
+
+        Parameters
+        ----------
+        tree : ast.AST
+            AST tree for analysis.
+        filename : str
+            Name of the Python file being checked.
+        """
         self._tree = tree
         self._filename = filename
 
@@ -64,6 +73,7 @@ class ImportChecker:
         }
 
     def run(self):
+        """ Reimplemented Flake8 plugin run """
         for code, rule in self._code_to_checker.items():
             for error in rule(self._tree, self._module_name):
                 yield (
@@ -75,6 +85,7 @@ class ImportChecker:
 
     @classmethod
     def add_options(cls, option_manager):
+        """ Reimplemented Flake8 plugin add_options """
         option_manager.add_option(
             "--no-deduce-path",
             dest="no_deduce_path",
@@ -101,6 +112,7 @@ class ImportChecker:
 
     @classmethod
     def parse_options(cls, options):
+        """ Reimplemented Flake8 plugin parse_options """
         cls._top_level_dir = options.top_level_dir
         cls._deduce_path = not options.no_deduce_path
         cls._disallowed_patterns = (
@@ -117,6 +129,13 @@ def _parse_disallowed_patterns(disallowed_patterns):
         Configuration that represents a pairing of filename pattern
         and regular expression for disallowed import.
         Multiple items should be separated by newlines.
+
+    Returns
+    -------
+    results : list of tuple(str, str)
+        The first item in the tuple is the pattern for matching files.
+        The second item in the tuple is the pattern for matching disallowed
+        imports.
     """
     results = []
     disallowed_patterns = disallowed_patterns.replace(" ", "")

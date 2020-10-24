@@ -27,6 +27,7 @@ class ImportAnalyzer(ast.NodeVisitor):
         self._errors = []
 
     def visit_Import(self, node):
+        """ Reimplemented NodeVisitor.visit_Import """
         for alias in node.names:
             target = alias.name
             for import_rule in self.import_rules:
@@ -42,6 +43,7 @@ class ImportAnalyzer(ast.NodeVisitor):
         self.generic_visit(node)
 
     def visit_ImportFrom(self, node):
+        """ Reimplemented NodeVisitor.visit_ImportFrom """
 
         for alias in node.names:
             if node.module is None:
@@ -66,7 +68,7 @@ class ImportAnalyzer(ast.NodeVisitor):
 
 
 def _normalize_target_module(source_module, target_module, level):
-    """ Normalize relative import to absolute import.
+    """ Normalize relative import, to absolute import if possible.
 
     Parameters
     ----------
@@ -83,6 +85,11 @@ def _normalize_target_module(source_module, target_module, level):
         imports. Positive values for level indicate the number
         of parent directories to search relative to the directory
         of the module calling import.
+
+    Returns
+    -------
+    module_name : str
+        Normalized import name
     """
     if source_module is None or level == 0:
         return target_module
