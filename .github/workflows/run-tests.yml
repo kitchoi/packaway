@@ -25,9 +25,10 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install flake8
         python -m pip install .[test]
-    - name: Lint with flake8
-      run: flake8 . packaway
-    - name: Test with pytest
+    - name: Create a clean directory
+      run: mkdir tmpdir
+    - name: Run tests
       run: python -m unittest discover -t . packaway
+      with:
+        working-directory: tmpdir
