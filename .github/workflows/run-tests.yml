@@ -29,5 +29,5 @@ jobs:
     - name: Create a clean directory
       run: mkdir tmpdir
     - name: Run tests
-      run: python -m unittest discover -t . packaway
+      run: python -m unittest discover packaway
       working-directory: tmpdir
