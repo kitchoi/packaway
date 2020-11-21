@@ -30,5 +30,4 @@ jobs:
       run: mkdir tmpdir
     - name: Run tests
       run: python -m unittest discover -t . packaway
-      with:
-        working-directory: tmpdir
+      working-directory: tmpdir
