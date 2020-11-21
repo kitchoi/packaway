@@ -1,6 +1,9 @@
 Packaway: Packaging Static Checker
 ==================================
 
+.. image:: https://github.com/kitchoi/packaway/workflows/Tests/badge.svg
+   :target: https://github.com/kitchoi/packaway
+
 Packaway is a tool for enforcing encapsulation and access control in Python
 by performing static code analysis.
 
