@@ -1,7 +1,10 @@
 Packaway: Packaging Static Checker
 ==================================
 
-.. image:: https://github.com/kitchoi/packaway/workflows/Tests/badge.svg
+.. image:: https://img.shields.io/github/workflow/status/kitchoi/packaway/Tests
+   :target: https://github.com/kitchoi/packaway
+
+.. image:: https://img.shields.io/github/license/kitchoi/packaway
    :target: https://github.com/kitchoi/packaway
 
 Packaway is a tool for enforcing encapsulation and access control in Python
