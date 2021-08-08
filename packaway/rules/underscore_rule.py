@@ -2,8 +2,22 @@
 """ This module supports disallowing imports using leading underscores and
 packaging structures.
 """
+import re
 
 from packaway.rules._ast_analyzer import ImportAnalyzer
+
+
+def _is_private_name(name):
+    """ Return true if the given variable name is considered private.
+
+    Parameters
+    ----------
+    name : str
+        Variable name to check
+    """
+    # e.g. __name__ is considered public.
+    is_reserved_public_name = re.match(r"__[a-zA-Z0-9_]+__$", name) is not None
+    return name.startswith("_") and not is_reserved_public_name
 
 
 def _is_valid_import(source_module, target_module):
@@ -41,7 +55,7 @@ def _is_valid_import(source_module, target_module):
         n_common_levels += 1
 
     for part in target_parts[n_common_levels + 1:]:
-        if part.startswith("_"):
+        if _is_private_name(part):
             return False, f"Importing private name {target_module!r}.",
     else:
         return True, ""
