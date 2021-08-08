@@ -1,3 +1,12 @@
+Release 0.3.0
+=============
+
+Fixes
+-----
+- Names with double underscores at the beginning and end will no longer
+  trigger a violation error. e.g. ``__version__`` and ``__name__`` can
+  be imported without being considered a violation.
+
 Release 0.2.0
 =============
 

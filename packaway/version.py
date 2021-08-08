@@ -1,6 +1,6 @@
 
 _MAJOR = 0
-_MINOR = 3
+_MINOR = 4
 _MICRO = 0
 
 #: One of 'alpha', 'beta', 'candidate', 'final'
