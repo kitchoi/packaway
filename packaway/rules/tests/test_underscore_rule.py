@@ -13,6 +13,7 @@ class TestAnalyzerAPI(unittest.TestCase):
         good_sources = [
             "from . import module",
             "from .subpackage.module import name",
+            "from .subpackage.module import __name__",
             "from ._subpackage.module import name",
             "from package.module import name",
             "from ..subpackage.module import name",
@@ -47,6 +48,7 @@ class TestAnalyzerAPI(unittest.TestCase):
     def test_error_examples(self):
         bad_sources = [
             "from .._subpackage import _name",
+            "from .subpackage import __name",
             "from ._subpackage._module import name",
         ]
         for source in bad_sources:
